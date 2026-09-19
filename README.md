@@ -1,4 +1,4 @@
-# Edge AI Solo Project — HAM10000 Skin Lesion Classification + Compression
+# Edge AI  — HAM10000 Skin Lesion Classification + Compression
 
 Plan A, locked. Research reference project for EPFL / US Master's applications.
 
