@@ -1,0 +1,5 @@
+data/HAM10000/
+models/*.tflite
+models/*.keras
+*.zip
+__pycache__/
