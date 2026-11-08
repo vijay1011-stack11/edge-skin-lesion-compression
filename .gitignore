@@ -3,3 +3,5 @@ models/*.tflite
 models/*.keras
 *.zip
 __pycache__/
+data/HAM10000_synthetic/
+models/*.h5

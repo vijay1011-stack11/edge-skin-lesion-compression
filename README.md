@@ -45,7 +45,7 @@ one thread, Google Colab CPU.
 | Pruned 70% + INT8 | 2645.6 | 3.3× | 10.5 | 0.121 | 0.034 | 0.000 | 0.000 |
 
 Pruned rows without "+ INT8" are dynamic-range INT8 models.
-Full results: [`reports/pareto_results.csv`](reports/pareto_results.csv)
+Full results: [`reports/pareto_results.csv`](reports/pareto_results.csv) · Baseline evaluation with confusion matrix: [`reports/baseline_v3_eval.json`](reports/baseline_v3_eval.json)
 
 ### Key findings
 
@@ -126,7 +126,12 @@ Tested on Google Colab (GPU for training, CPU for benchmarking).
    !kaggle datasets download -d kmader/skin-cancer-mnist-ham10000 -p data/HAM10000 --unzip
    ```
 4. `pip install -r requirements.txt`
-5. Confirm `MOBILENET_WEIGHTS = "imagenet"` in `src/config.py` (the default).
+5. Set `TF_USE_LEGACY_KERAS=1` before importing TensorFlow (tfmot requires Keras 2):
+   ```python
+   import os
+   os.environ["TF_USE_LEGACY_KERAS"] = "1"
+   ```
+6. Confirm `MOBILENET_WEIGHTS = "imagenet"` in `src/config.py` (the default).
 
 ## Running the pipeline
 

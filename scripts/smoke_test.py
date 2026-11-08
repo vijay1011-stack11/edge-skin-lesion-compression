@@ -7,8 +7,9 @@ from this are meaningless.
 import os
 import sys
 
-os.environ["HAM10000_DIR"] = "/home/claude/edge-ai-skin-lesion/data/HAM10000_synthetic"
-sys.path.insert(0, "/home/claude/edge-ai-skin-lesion")
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.environ["HAM10000_DIR"] = os.path.join(PROJECT_ROOT, "data", "HAM10000_synthetic")
+sys.path.insert(0, PROJECT_ROOT)
 
 from src import config
 
@@ -21,8 +22,8 @@ config.PRUNING_TARGET_SPARSITY = [0.5]
 config.BENCHMARK_NUM_RUNS = 5
 config.BATCH_SIZE = 4
 config.FINETUNE_UNFREEZE_FROM = 140  # unfreeze very few layers, keep it fast
-config.MOBILENET_WEIGHTS = None  # this sandbox has no internet access to fetch ImageNet weights;
-                                  # real runs (Colab / your machine) must use "imagenet"
+config.MOBILENET_WEIGHTS = None  # skip the ImageNet download for a fast offline check;
+                                  # real runs must use "imagenet"
 
 from src import train_baseline, compress, benchmark
 
