@@ -27,19 +27,12 @@ Verified via arXiv/Springer/MDPI/PubMed. 6 confirmed, 2 flagged low-confidence (
 - Lavaei et al. (2025), arXiv:2512.17515 — PTQ/QAT on unspecified "medical imaging datasets"; could not confirm HAM10000 is included or any numeric results.
 - ScienceDirect (2024) "Skin cancer detection using lightweight model souping and ensembling knowledge distillation for memory-constrained devices" — on-topic title, but paywalled; authors/metrics not confirmed.
 
-## Direct verdict: is this project novel?
+## Positioning of this project
 
-**No, not in its plain form.** "Train MobileNetV2 on HAM10000, run TFLite PTQ, report accuracy drop" is already covered in spirit by papers 1, 4, and 5. That exact recipe alone is not a contribution — a reviewer (or an admissions reader who checks) would call it derivative.
+Training MobileNetV2 on HAM10000 and applying TFLite PTQ is not new on its own; papers 1, 4 and 5 cover closely related ground. The project therefore focuses on three things that are absent or only partly covered in the papers above:
 
-**What's actually missing from the literature, and what this project will do instead:**
+1. **Measured CPU latency on a reproducible setup.** Most papers report parameters or FLOPs as a proxy for efficiency. Paper 4 reports measured latency, but on specialised neuromorphic hardware (BrainChip Akida), and paper 5 reports a measured mobile latency (109 ms). This project measures single-thread CPU latency for every variant with the TFLite interpreter.
+2. **Per-class F1 under compression.** HAM10000 is heavily imbalanced (~67% `nv`), so aggregate accuracy can hide a collapse on the rare, clinically important classes (`mel`, `akiec`). None of the papers above report per-class degradation across compression levels; for paper 5 this needs to be checked against the full text, since only the abstract was available.
+3. **One backbone, one split, one benchmark for all techniques.** Pruning (30/50/70%), INT8 PTQ (dynamic-range and full-integer), pruning combined with INT8, and QAT are compared on the same MobileNetV2 baseline and the same lesion-level split.
 
-1. **No paper here measures real wall-clock CPU/edge-device latency.** All of them report FLOPs/params as a *proxy* for efficiency, or use exotic hardware (BrainChip Akida — not something anyone else can reproduce). None benchmark on a standard, reproducible target (a laptop CPU thread-limited to simulate a low-power device, or literally a Raspberry Pi).
-2. **No paper reports per-class accuracy degradation under compression.** HAM10000 is heavily imbalanced (~67% `nv`/melanocytic nevi). Aggregate accuracy can look fine while the compressed model silently gets much worse at the rare, clinically important classes (`mel`, `akiec`). Nobody in this list checks that.
-3. **No paper here runs a full combined ablation** (pruning + INT8 PTQ + QAT on the *same* backbone, same data splits) to produce a real accuracy-vs-size-vs-latency Pareto frontier. Each paper picks one technique.
-
-**Locked differentiation angle for this project (all three, since they're one experiment pipeline anyway):**
-- Real CPU latency benchmarking (TFLite runtime, thread-limited to 1 core as a low-power-device proxy; Raspberry Pi run is a stretch goal, not a requirement) instead of FLOPs-as-proxy.
-- Per-class F1 degradation curve across compression levels (baseline → pruned → INT8 PTQ → QAT), highlighting `mel`/`akiec` specifically — the clinically-dangerous classes most likely to break silently.
-- Full Pareto frontier across 2x/4x/8x/16x effective compression, not a single checkpoint.
-
-Cite papers 1, 4, and 5 explicitly in the report's related-work section as the closest prior art, and state up front why this project's contribution is the latency+per-class-degradation angle they don't cover.
+Papers 1, 4 and 5 are cited as the closest prior work in the technical report's related-work section.
