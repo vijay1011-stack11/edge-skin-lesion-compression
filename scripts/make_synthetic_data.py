@@ -9,7 +9,8 @@ import csv
 import numpy as np
 from PIL import Image
 
-OUT_DIR = "/home/claude/edge-ai-skin-lesion/data/HAM10000_synthetic"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT_DIR = os.path.join(PROJECT_ROOT, "data", "HAM10000_synthetic")
 CLASSES = ["akiec", "bcc", "bkl", "df", "mel", "nv", "vasc"]
 IMAGES_PER_CLASS = 6  # small on purpose -- enough for a couple of lesions per class
 

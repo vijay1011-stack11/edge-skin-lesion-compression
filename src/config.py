@@ -4,20 +4,22 @@ Edit DATA_DIR to point at wherever you've put the dataset.
 """
 import os
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # ---- Paths ----
 # Expected layout (this is exactly how HAM10000 ships from Kaggle / Harvard Dataverse):
 #   DATA_DIR/HAM10000_metadata.csv
 #   DATA_DIR/HAM10000_images_part_1/*.jpg
 #   DATA_DIR/HAM10000_images_part_2/*.jpg
-DATA_DIR = os.environ.get("HAM10000_DIR", "/home/claude/edge-ai-skin-lesion/data/HAM10000")
+DATA_DIR = os.environ.get("HAM10000_DIR", os.path.join(PROJECT_ROOT, "data", "HAM10000"))
 METADATA_CSV = os.path.join(DATA_DIR, "HAM10000_metadata.csv")
 IMAGE_DIRS = [
     os.path.join(DATA_DIR, "HAM10000_images_part_1"),
     os.path.join(DATA_DIR, "HAM10000_images_part_2"),
 ]
 
-OUTPUT_DIR = "/home/claude/edge-ai-skin-lesion/models"
-REPORTS_DIR = "/home/claude/edge-ai-skin-lesion/reports"
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "models")
+REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports")
 
 # ---- Classes ----
 # HAM10000's 7 diagnostic categories (dx column), in a fixed order used everywhere.
@@ -37,17 +39,21 @@ NUM_CLASSES = len(CLASS_NAMES)
 # and rare -- these are the ones a compressed model is most likely to quietly get worse at).
 CRITICAL_CLASSES = ["mel", "akiec"]
 
+# Extra class-weight multipliers applied on top of inverse frequency when training
+# the baseline (v3). Compression fine-tuning uses plain inverse-frequency weights.
+BASELINE_CLASS_WEIGHT_BOOST = {"mel": 2.0, "akiec": 1.5}
+
 # ---- Image / training params ----
 # "imagenet" for real training. Set to None only for offline smoke-testing the code
-# (e.g. this sandbox, which has no internet access to fetch pretrained weights).
+# (scripts/smoke_test.py does this so it can run without downloading weights).
 MOBILENET_WEIGHTS = "imagenet"
 IMG_SIZE = 224          # MobileNetV2 default input size
 BATCH_SIZE = 32
 SEED = 42
 
 BASELINE_EPOCHS_FROZEN = 10     # phase 1: frozen backbone, train head only
-BASELINE_EPOCHS_FINETUNE = 15   # phase 2: unfreeze top layers, fine-tune
-FINETUNE_UNFREEZE_FROM = 100    # unfreeze MobileNetV2 layers from this index onward
+BASELINE_EPOCHS_FINETUNE = 25   # phase 2: unfreeze top layers, fine-tune (early stopping)
+FINETUNE_UNFREEZE_FROM = 60     # unfreeze MobileNetV2 layers from this index onward
 
 # ---- Compression params ----
 PRUNING_TARGET_SPARSITY = [0.3, 0.5, 0.7]   # multiple pruning levels for the Pareto sweep

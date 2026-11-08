@@ -24,7 +24,9 @@ def main():
     print(f"Test:  {len(test_df)} images / {test_df['lesion_id'].nunique()} lesions")
 
     class_weights = data.compute_class_weights(train_df)
-    print("Class weights (inverse frequency):", class_weights)
+    for name, mult in config.BASELINE_CLASS_WEIGHT_BOOST.items():
+        class_weights[config.CLASS_NAMES.index(name)] *= mult
+    print("Class weights (inverse frequency + mel/akiec boost):", class_weights)
 
     train_ds = data.make_dataset(train_df, augment=True, shuffle=True)
     val_ds = data.make_dataset(val_df, augment=False, shuffle=False)

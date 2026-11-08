@@ -1,5 +1,5 @@
 """
-Compression pipeline: structured pruning, INT8 post-training quantization (PTQ),
+Compression pipeline: unstructured magnitude pruning, INT8 post-training quantization (PTQ),
 quantization-aware training (QAT), and pruning+PTQ combined.
 
 Produces one TFLite file per configuration in models/, named so benchmark.py can
@@ -47,7 +47,7 @@ def run_ptq(baseline_path, train_df):
 
 
 def run_pruning(baseline_path, train_df, val_df, sparsity):
-    """Structured magnitude pruning at a target sparsity, then fine-tune to recover accuracy."""
+    """Unstructured (element-wise) magnitude pruning at a target sparsity, then fine-tune to recover accuracy."""
     model = tf.keras.models.load_model(baseline_path)
 
     train_ds = data.make_dataset(train_df, augment=True, shuffle=True)
