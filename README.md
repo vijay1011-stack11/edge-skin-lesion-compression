@@ -16,7 +16,7 @@ Rural clinics and disaster zones are where image-based AI would help most and
 where a reliable connection to a cloud model is least likely. Running a
 compressed model on the device removes that dependency, but compression is
 not free: it can cost accuracy unevenly across classes, and a smaller model is
-not automatically a faster one on a given chip.
+not automatically a faster one on a given chips.
 
 This project asks, for one concrete task, what each compression technique
 costs in accuracy, class by class, and in real milliseconds on a CPU, instead
